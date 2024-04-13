@@ -8,6 +8,7 @@ const userInfoSchema = new db.mongoose.Schema(
         collegeUniversity:{type:String,required:false},
         workingAt:{type:String,required:false},
         provinceCityAt:{type:String,required:false},
+        coverImage:{type:String,required:false},
         postSave:[
             {
             type:db.mongoose.Schema.Types.ObjectId,

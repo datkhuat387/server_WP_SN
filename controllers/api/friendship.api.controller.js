@@ -41,7 +41,7 @@ exports.addFriend = async(req,res,next)=>{
         return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
     }
 }
-exports.conFrimAddFriend = async(req,res,next)=>{
+exports.conFirmAddFriend = async(req,res,next)=>{
     try {
         const id = req.params.id;
         const checkFriend = await friendShip.friendshipModel.findOne({_id:id, status:0})
@@ -55,7 +55,7 @@ exports.conFrimAddFriend = async(req,res,next)=>{
         return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
     }
 }
-exports.notConFrimAddFriend = async(req,res,next)=>{
+exports.notConFirmAddFriend = async(req,res,next)=>{
     try {
         const id = req.params.id;
         const checkFriend = await friendShip.friendshipModel.findOne({_id:id, status:0})
@@ -63,7 +63,7 @@ exports.notConFrimAddFriend = async(req,res,next)=>{
             return res.status(400).send("Lời mời quá hạn.")
         }
         await friendShip.friendshipModel.deleteOne({_id:id})
-        res.status(200).json(conFrim)
+        res.status(200).send("Đã xóa")
     } catch (error) {
         return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
     }
@@ -190,7 +190,8 @@ exports.getListFriend = async(req,res,next)=>{
 exports.getListFriendWaitConfrim = async(req,res,next)=>{
     try {
         const idUser = req.params.idUser;
-        let listFriend = await friendShip.friendshipModel.find({idFriend:idUser,status:0}).populate("idUser", "fullname avatar");
+        let listFriend = await friendShip.friendshipModel.find({idFriend:idUser,status:0}).populate("idUser", "fullname avatar")
+                                                                                        .populate("idFriend", "fullname avatar");
         res.status(200).json(listFriend)
     } catch (error) {
         return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
@@ -200,7 +201,8 @@ exports.getListFriendWaitConfrim = async(req,res,next)=>{
 exports.getListFriendIsWaitConfrim = async(req,res,next)=>{
     try {
         const idUser = req.params.idUser;
-        let listFriend = await friendShip.friendshipModel.find({idUser:idUser,status:0}).populate("idUser", "fullname avatar");
+        let listFriend = await friendShip.friendshipModel.find({idUser:idUser,status:0}).populate("idUser", "fullname avatar")
+                                                                                        .populate("idFriend", "fullname avatar");
         res.status(200).json(listFriend)
     } catch (error) {
         return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
