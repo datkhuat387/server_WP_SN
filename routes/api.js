@@ -17,6 +17,7 @@ const apiComment = require("../controllers/api/comment.api.controller");
 const apiUserInfo = require("../controllers/api/userInfo.api.controller");
 const apiFriendShip = require("../controllers/api/friendship.api.controller");
 const token = require("../middleware/ensureAuthenticated");
+const apiRelationship = require("../controllers/api/relationship.api.controller");
 
 ///-------------user----------------///
 router.post('/login',apiUSer.login);
@@ -51,8 +52,10 @@ router.get('/listFriend/:idUser',apiFriendShip.getListFriend);
 router.get('/listFriendWaitConfirm/:idUser',apiFriendShip.getListFriendWaitConfrim);
 router.get('/listFriendIsWaitConfirm/:idUser',apiFriendShip.getListFriendIsWaitConfrim);
 router.get('/listFriendIsBlock/:idUser',apiFriendShip.getListFriendIsBlock);
-router.put('/confrimAddFriend/:id',apiFriendShip.conFrimAddFriend);
-router.delete('/notConfrimAddFriend/:id',apiFriendShip.notConFrimAddFriend);
+router.put('/confirmAddFriend/:id',apiFriendShip.conFirmAddFriend);
+router.delete('/notConfirmAddFriend/:id',apiFriendShip.notConFirmAddFriend);
 router.put('/block/:idUser/:idFriend',apiFriendShip.block);
+///----------Type Relationship------///
+router.post("/createTypeRelationship",apiRelationship.createTypeRelationship);
 
 module.exports = router;

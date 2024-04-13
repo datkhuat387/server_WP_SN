@@ -37,13 +37,13 @@ exports.createUserInfo = async(req,res,next)=>{
 exports.getUserInfo = async(req,res,next)=>{
     try {
         const idUser = req.params.idUser;
-        let userInf = await userInfo.userInfoModel.findOne({_id: idUser});
+        let userInf = await userInfo.userInfoModel.findOne({_id: idUser}).populate("relationship").populate("postSave");
         if(userInf != null){
             return res.json(userInf)
         }else{
             return res.status(401).send("Lỗi thông tin tài khoản.");
         }
     } catch (error) {
-        return res.status(500).send("Đã xảy ra lỗi khi đăng nhập: " + error.message);
+        return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
     }
 }
