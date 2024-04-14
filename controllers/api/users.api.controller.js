@@ -1,5 +1,7 @@
 const { utc } = require("moment-timezone");
 const userModel = require("../../models/users.model");
+const multer = require('multer');
+const fs = require('fs');
 const bcrypt = require("bcrypt");
 const { userInforModel } = require("../../models/userInfo.model");
 
@@ -102,10 +104,9 @@ exports.createUser = async (req, res, next) => {
       .send("Đã xảy ra lỗi khi đăng ký: " + error.message);
   }
 };
-
 exports.updateUser = async (req, res, next) => {
   const { idUser } = req.params;
-  const { email, phone, fullname } = req.body;
+  const { email, phone } = req.body;
 
   try {
     let user = await userModel.userModel.findById(idUser);
@@ -117,7 +118,7 @@ exports.updateUser = async (req, res, next) => {
       return res.status(401).send("Tài khoản đã bị khóa.");
     }
 
-    // Kiểm tra email và số điện thoại đã tồn tại hay chưa
+    // Kiểm tra email đã tồn tại hay chưa
     if (email !== undefined && email !== "") {
       const existingEmailUser = await userModel.userModel.findOne({ email });
       if (existingEmailUser && existingEmailUser._id.toString() !== idUser) {
@@ -129,6 +130,7 @@ exports.updateUser = async (req, res, next) => {
       user.email = email;
     }
 
+    // Kiểm tra số điện thoại đã tồn tại hay chưa
     if (phone !== undefined && phone !== "") {
       const existingPhoneUser = await userModel.userModel.findOne({ phone });
       if (existingPhoneUser && existingPhoneUser._id.toString() !== idUser) {
@@ -140,16 +142,62 @@ exports.updateUser = async (req, res, next) => {
       user.phone = phone;
     }
 
-    if (fullname !== undefined && fullname !== "") {
-      user.fullname = fullname;
-    }
-
-    // Lưu trữ thông tin người dùng đã cập nhật
     const updatedUser = await user.save();
 
     res.status(200).json(updatedUser);
   } catch (error) {
     return res.status(500).send("Đã xảy ra lỗi khi cập nhật người dùng: " + error.message);
+  }
+};
+exports.updateFullname = async (req, res, next) => {
+  const { idUser } = req.params;
+  const { fullname } = req.body;
+
+  try {
+    let user = await userModel.userModel.findById(idUser);
+    if (!user) {
+      return res.status(404).send("Người dùng không tồn tại.");
+    }
+
+    if (user.status !== 0) {
+      return res.status(401).send("Tài khoản đã bị khóa.");
+    }
+
+    if (fullname !== undefined && fullname !== "") {
+      user.fullname = fullname;
+    }
+
+    const updatedUser = await user.save();
+
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    return res.status(500).send("Đã xảy ra lỗi khi cập nhật người dùng: " + error.message);
+  }
+};
+exports.updateAvatar = async (req, res, next) => {
+  try {
+    const { idUser } = req.params;
+    const user = await userModel.userModel.findById(idUser);
+    if (!user) {
+      return res.status(404).send("Người dùng không tồn tại.");
+    }
+
+    if (user.status !== 0) {
+      return res.status(401).send("Tài khoản đã bị khóa.");
+    }
+
+    // if (req.file !== undefined && req.file !== "") {
+    //   user.avatar = `/uploads/${req.file.filename}`;
+    // }
+    user.avatar =
+    req.file == null || req.file == undefined? ""
+    : `/uploads/${req.file.filename}`;
+
+    const updatedUser = await user.save();
+
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    return res.status(500).send("Đã xảy ra lỗi khi cập nhật avatar người dùng: " + error.message);
   }
 };
 exports.changePassword = async (req, res, next) => {

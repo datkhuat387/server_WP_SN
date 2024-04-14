@@ -33,6 +33,35 @@ exports.getAllPost = async(req,res, next) =>{
   res.status(200).json(listPost);
 }
 
+exports.getPostByidUser = async(req,res, next) =>{
+  const idUser = req.params.idUser;
+  let listPost = await postModel.postModel.find({idUser:idUser}).populate("idUser","fullname avatar")
+                                                .populate(
+                                                  {
+                                                    path: "comment",
+                                                    populate: {
+                                                      path: "idUser",
+                                                      select: "fullname avatar"
+                                                    },
+                                                  } 
+                                                )
+                                                .populate(
+                                                  {
+                                                    path: "like",
+                                                    populate: {
+                                                      path: "idUser",
+                                                      select: "fullname avatar"
+                                                    },
+                                                  }
+                                                );
+  listPost = listPost.map((post) => {
+    const isOwner = post.idUser._id.toString() === idUser;
+    const isLiked = post.like.some((like) => like.idUser._id.toString() === idUser);
+    return { ...post.toObject(), isOwner, isLiked };
+  });
+  res.status(200).json(listPost);
+}
+
 exports.createPost = async (req, res, next) => {
   try {
     let objPost = new postModel.postModel();
@@ -92,7 +121,6 @@ exports.updatePost = async(req,res,next)=>{
     return res.status(500).send("Đã xảy ra lỗi: " + error.message);
   }
 }
-
 exports.removePost = async(req,res,next)=>{
   try {
     const idPost = req.params.id
