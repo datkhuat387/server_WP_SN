@@ -37,7 +37,29 @@ exports.createUserInfo = async(req,res,next)=>{
 exports.getUserInfo = async(req,res,next)=>{
     try {
         const idUser = req.params.idUser;
-        let userInf = await userInfo.userInfoModel.findOne({_id: idUser}).populate("relationship").populate("postSave");
+        let userInf = await userInfo.userInfoModel.findOne({_id: idUser}).populate("relationship").populate({
+                                                                                                        path: "postSave",
+                                                                                                        populate: [
+                                                                                                        {
+                                                                                                            path: "idUser",
+                                                                                                            select: "fullname avatar",
+                                                                                                        },
+                                                                                                        {
+                                                                                                            path: "like",
+                                                                                                            populate: {
+                                                                                                                path: "idUser",
+                                                                                                                select: "fullname avatar"
+                                                                                                              },
+                                                                                                        },
+                                                                                                        {
+                                                                                                            path: "comment",
+                                                                                                            populate: {
+                                                                                                                path: "idUser",
+                                                                                                                select: "fullname avatar"
+                                                                                                              },
+                                                                                                        },
+                                                                                                        ],
+                                                                                                    });
         if(userInf != null){
             return res.json(userInf)
         }else{
