@@ -30,6 +30,8 @@ router.put('/userChangePasswd/:idUser',apiUSer.changePassword);
 ///-----------userInfor-------------///
 router.post('/createUserInfo/:idUser',apiUserInfo.createUserInfo);
 router.get('/userInfo/:idUser',apiUserInfo.getUserInfo);
+router.put('/updateDateOfBirth/:id',apiUserInfo.updateDatOfBirth);
+router.put('/updateUserInfo/:id',apiUserInfo.updateUserInfo);
 ///-------------post----------------///
 router.post('/createPost',upload.single('image'),apiPost.createPost);
 router.get('/getAllPost/:idUser',apiPost.getAllPost);

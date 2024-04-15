@@ -185,10 +185,6 @@ exports.updateAvatar = async (req, res, next) => {
     if (user.status !== 0) {
       return res.status(401).send("Tài khoản đã bị khóa.");
     }
-
-    // if (req.file !== undefined && req.file !== "") {
-    //   user.avatar = `/uploads/${req.file.filename}`;
-    // }
     user.avatar =
     req.file == null || req.file == undefined? ""
     : `/uploads/${req.file.filename}`;
@@ -243,7 +239,7 @@ exports.changePassword = async (req, res, next) => {
 
     await user.save();
 
-    return res.status(200).json(accountId);
+    return res.status(200).json(user);
   } catch (error) {
     return res
       .status(500)

@@ -13,10 +13,11 @@ exports.createUserInfo = async(req,res,next)=>{
                 objUserInfo.isActive = false;
                 objUserInfo.dateOfBirth = null;
                 objUserInfo.highSchool = null;
-                objUserInfo.college_university = null;
+                objUserInfo.collegeUniversity = null;
                 objUserInfo.workingAt = null;
                 objUserInfo.provinceCityAt = null;
                 objUserInfo.postSave = [];
+                objUserInfo.coverImage = "/uploads/1713001266078-Untitled.png";
                 objUserInfo.relationship = null;
                 objUserInfo.socialLinks = null;
                 objUserInfo.createAt = Date.now();
@@ -68,4 +69,63 @@ exports.getUserInfo = async(req,res,next)=>{
     } catch (error) {
         return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
     }
+}
+exports.updateDatOfBirth = async(req,res,next)=>{
+    try {
+        const id = req.params.id
+        const dateOfBirth = req.body.dateOfBirth
+        const checkUserInfor = await userInfo.userInfoModel.findById(id);
+        if(!checkUserInfor){
+            return res.status(404).send("Thông tin người dùng không tồn tại");
+        }
+        if(dateOfBirth=== null || dateOfBirth===""){
+            return res.status(400).send("Ngày sinh không được để trống");
+        }
+        checkUserInfor.dateOfBirth = dateOfBirth
+        
+        const updateUser = await checkUserInfor.save()
+        res.status(200).json(updateUser)
+    } catch (error) {
+        return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
+    }
+}
+exports.updateUserInfo = async(req,res,next)=>{
+    try {
+        const id = req.params.id;
+        const {
+            highSchool,
+            collegeUniversity,
+            workingAt,
+            provinceCityAt,
+            relationship,
+            socialLinks} = req.body;
+        const checkUserInfor = await userInfo.userInfoModel.findById(id);
+        if(!checkUserInfor){
+            return res.status(404).send("Thông tin người dùng không tồn tại");
+        }
+        if(highSchool !== undefined && highSchool !== ""){
+            checkUserInfor.highSchool = highSchool;
+        }
+        if(collegeUniversity !== undefined && collegeUniversity !== ""){
+            checkUserInfor.collegeUniversity = collegeUniversity;
+        }
+        if(workingAt !== undefined && workingAt !== ""){
+            checkUserInfor.workingAt = workingAt;
+        }
+        if(provinceCityAt !== undefined && provinceCityAt !== ""){
+            checkUserInfor.provinceCityAt = provinceCityAt
+        }
+        if(relationship !== undefined && relationship !==""){
+            checkUserInfor.relationship = relationship
+        }
+        if(socialLinks !== undefined && relationship !==""){
+            checkUserInfor.socialLinks = socialLinks
+        }
+
+        const updateUserInfo = await checkUserInfor.save();
+        res.status(200).json(updateUserInfo)
+    } catch (error) {
+        return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
+    }
+
 }
