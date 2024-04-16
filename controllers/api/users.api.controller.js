@@ -193,6 +193,7 @@ exports.updateAvatar = async (req, res, next) => {
 
     res.status(200).json(updatedUser);
   } catch (error) {
+    console.log(error.message);
     return res.status(500).send("Đã xảy ra lỗi khi cập nhật avatar người dùng: " + error.message);
   }
 };

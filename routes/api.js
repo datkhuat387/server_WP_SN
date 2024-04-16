@@ -32,6 +32,7 @@ router.post('/createUserInfo/:idUser',apiUserInfo.createUserInfo);
 router.get('/userInfo/:idUser',apiUserInfo.getUserInfo);
 router.put('/updateDateOfBirth/:id',apiUserInfo.updateDatOfBirth);
 router.put('/updateUserInfo/:id',apiUserInfo.updateUserInfo);
+router.put('/updateCoverImage/:id',upload.single('coverImage'),apiUserInfo.updateCoverImage);
 ///-------------post----------------///
 router.post('/createPost',upload.single('image'),apiPost.createPost);
 router.get('/getAllPost/:idUser',apiPost.getAllPost);

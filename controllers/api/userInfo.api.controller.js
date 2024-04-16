@@ -129,3 +129,19 @@ exports.updateUserInfo = async(req,res,next)=>{
     }
 
 }
+exports.updateCoverImage = async(req,res,next)=>{
+    try {
+        const id = req.params.id;
+        const checkUserInfor = await userInfo.userInfoModel.findById(id);
+        if(!checkUserInfor){
+            return res.status(404).send("Thông tin người dùng không tồn tại");
+        }
+        checkUserInfor.coverImage =
+        req.file == null || req.file == undefined? ""
+        : `/uploads/${req.file.filename}`;
+        const updateCoverImage = await checkUserInfor.save();
+        res.status(200).json(updateCoverImage);
+    } catch (error) {
+        return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
+    }
+}
