@@ -49,15 +49,17 @@ exports.likeByIdPost = async(req,res,next)=>{
       if (existingLike) {
         res.status(200).send("Bạn đã thích bài viết trước đó.");
       } else {
-        let objLike = new likeModel.likeModel();
-        objLike.idPost = idPost;
-        objLike.idUser = idUser;
-        objLike.status = 0;
-        objLike.createAt = Date.now();
+        let objLike = await likeModel.likeModel.create({
+          idPost: idPost,
+          idUser: idUser,
+          status: 0,
+          createAt: Date.now()
+        })
+      
         if(!idUser||!idPost){
           return res.status(400).send("Lỗi thông tin bài viết hoặc người dùng.");
         }
-        await objLike.save();
+        await objLike.populate("idUser", "fullname avatar")
         // Cập nhật trường like trong bài viết
         await postModel.findOneAndUpdate(
           { _id: idPost },
@@ -86,7 +88,7 @@ exports.removeLike = async (req, res, next) => {
     const likeId = req.params.id;
 
     // Tìm kiếm like với _id
-    const existingLike = await likeModel.likeModel.findById(likeId);
+    const existingLike = await likeModel.likeModel.findById(likeId).populate("idUser", "fullname avatar")
 
     if (existingLike) {
       // Xóa likeId khỏi trường 'like' của bài viết
@@ -100,9 +102,10 @@ exports.removeLike = async (req, res, next) => {
       );
 
       // Xóa like
-      await likeModel.likeModel.deleteOne({ _id: likeId });
+      await likeModel.likeModel.deleteOne({ _id: likeId })
 
-      res.status(200).send("Bạn đã bỏ thích bài viết.");
+      console.log(existingLike);
+      res.status(200).json(existingLike);
     } else {
       res.status(404).send("Không tìm thấy bản ghi thích.");
     }
