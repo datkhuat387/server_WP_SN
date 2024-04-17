@@ -11,17 +11,18 @@ exports.commentByIdPost = async(req,res,next)=>{
         if(!checkPost){
             return res.status(404).send("Bài viết không tồn tại.")
         }
-        let objComment = new commentModel.commentModel()
-        objComment.idUser = idUser;
-        objComment.idPost = idPost;
-        objComment.status = 0;
-        objComment.comment = req.body.comment;
-        objComment.createAt = Date.now();
-        objComment.updateAt = Date.now()
+        let objComment = await commentModel.commentModel.create({
+            idUser: idUser,
+            idPost: idPost,
+            status: 0,
+            comment: req.body.comment,
+            createAt: Date.now(),
+            updateAt: Date.now()
+        });
         if(!objComment.comment){
             return res.status(400).send("Bạn chưa nhập bình luận.");
         }
-        objComment.save()
+        await objComment.populate("idUser", "fullname avatar")
         await postModel.findOneAndUpdate(
             {_id: idPost},
             {
@@ -56,7 +57,7 @@ exports.getListCmtByIdPost = async(req,res,next)=>{
 exports.removeComment = async(req,res,next)=>{
     try {
         const idComment = req.params.id;
-        const checkComment = await commentModel.commentModel.findById(idComment);
+        const checkComment = await commentModel.commentModel.findById(idComment).populate("idUser", "fullname avatar");
         if(checkComment){
             await postModel.findOneAndUpdate(
                 {_id: checkComment.idPost},
@@ -67,7 +68,8 @@ exports.removeComment = async(req,res,next)=>{
             )
 
             await commentModel.commentModel.deleteOne({_id:idComment});
-            res.status(200).send("Đã xóa bình luận");
+            console.log(checkComment);
+            res.status(200).json(checkComment)
         }else{
             res.status(401).send("Không tìm thấy bình luận.");
         }
@@ -79,7 +81,7 @@ exports.removeComment = async(req,res,next)=>{
 exports.updateComment = async(req,res,next)=>{
     try {
         const idComment = req.params.id;
-        const checkComment = await commentModel.commentModel.findById(idComment);
+        const checkComment = await commentModel.commentModel.findById(idComment).populate("idUser", "fullname avatar");
         if(!checkComment){
             return res.status(404).send("Bình luận không tồn tại");
         }

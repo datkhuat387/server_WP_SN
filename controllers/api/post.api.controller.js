@@ -140,7 +140,7 @@ exports.removePost = async(req,res,next)=>{
       if(checkPost.image!==null||checkPost.image!==""){
         const imagePath = checkPost.image;
         if (imagePath) {
-          fs.unlinkSync("D:/DA_Android/Server/server_WP_SN/public"+imagePath);
+          fs.unlinkSync("D:/Android_Kotlin/Server/server_WP_SN/public"+imagePath);
           console.log("remove image");
         }
       }
