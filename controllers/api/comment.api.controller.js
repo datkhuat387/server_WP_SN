@@ -14,6 +14,7 @@ exports.commentByIdPost = async(req,res,next)=>{
         let objComment = await commentModel.commentModel.create({
             idUser: idUser,
             idPost: idPost,
+            isEditing: false,
             status: 0,
             comment: req.body.comment,
             createAt: Date.now(),
