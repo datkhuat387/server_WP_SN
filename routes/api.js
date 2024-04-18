@@ -45,6 +45,7 @@ router.get('/getPostByIdUser/:idUser',apiPost.getPostByidUser);
 router.delete('/removeLike/:id',apiLike.removeLike);
 router.get('/listLikeByIdPost/:idPost',apiLike.getLikeByIdPost)
 router.post('/like',apiLike.likeByIdPost)
+// router.post('/like',apiLike.likeByIdPost)
 ///-----------comment-------------///
 router.post('/comment/',apiComment.commentByIdPost);
 router.get('/comment/:idPost',apiComment.getListCmtByIdPost);
