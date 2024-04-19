@@ -40,6 +40,7 @@ router.put('/updatePost/:id',upload.single('image'),apiPost.updatePost)
 router.delete('/post/:id',apiPost.removePost);
 router.get('/detailPost/:id',apiPost.getDetailPostById)
 router.get('/getPostByIdUser/:idUser',apiPost.getPostByidUser);
+router.get('/searchPost',apiPost.searchPosts);
 ///------------like----------------///
 // router.post('/like',apiLike.like);
 router.delete('/removeLike/:id',apiLike.removeLike);

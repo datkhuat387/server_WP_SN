@@ -67,6 +67,8 @@ exports.createPost = async (req, res, next) => {
     let objPost = new postModel.postModel();
     objPost.idUser = req.body.idUser;
     objPost.isOwner = true;
+    objPost.idGroup = null;
+    objPost.idPage = null;
     objPost.isLiked = false;
     objPost.content = req.body.content;
     objPost.comment = [];
@@ -176,6 +178,37 @@ exports.getDetailPostById = async(req,res,next)=>{
       res.status(401).send("Lỗi thông tin bài viết.");
       console.log("Lỗi thông tin");
     }
+  } catch (error) {
+    console.log("Lỗi try catch");
+    return res.status(500).send("Đã xảy ra lỗi: " + error.message);
+  }
+}
+
+exports.searchPosts = async(req,res,next)=>{
+  try {
+    const textSearch = req.body.textSearch;
+    const regexSearch = new RegExp(textSearch,'i');
+
+    let resultPost = await postModel.postModel.find({content: { $regex: regexSearch}}).populate("idUser","fullname avatar")
+                                                                                      .populate(
+                                                                                        {
+                                                                                          path: "comment",
+                                                                                          populate: {
+                                                                                            path: "idUser",
+                                                                                            select: "fullname avatar"
+                                                                                          },
+                                                                                        } 
+                                                                                      )
+                                                                                      .populate(
+                                                                                        {
+                                                                                          path: "like",
+                                                                                          populate: {
+                                                                                            path: "idUser",
+                                                                                            select: "fullname avatar"
+                                                                                          },
+                                                                                        }
+                                                                                      );
+    res.status(200).json(resultPost)
   } catch (error) {
     console.log("Lỗi try catch");
     return res.status(500).send("Đã xảy ra lỗi: " + error.message);

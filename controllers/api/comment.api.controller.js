@@ -87,6 +87,7 @@ exports.updateComment = async(req,res,next)=>{
             return res.status(404).send("Bình luận không tồn tại");
         }
         checkComment.comment = req.body.comment;
+        checkComment.updateAt = Date.now();
 
         const updateComment = await checkComment.save()
         res.status(200).json(updateComment);
