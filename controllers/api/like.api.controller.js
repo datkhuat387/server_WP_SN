@@ -52,6 +52,7 @@ exports.likeByIdPost = async(req,res,next)=>{
         let objLike = await likeModel.likeModel.create({
           idPost: idPost,
           idUser: idUser,
+          idPage: null,
           status: 0,
           createAt: Date.now()
         })

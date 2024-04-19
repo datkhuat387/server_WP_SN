@@ -3,6 +3,8 @@ var db = require('./db');
 const postSchema = new db.mongoose.Schema(
     {
         idUser:{type:db.mongoose.Schema.Types.ObjectId, ref:"userModel"},
+        idGroup:{type:db.mongoose.Schema.Types.ObjectId, ref:"groupModel"},
+        idPage:{type:db.mongoose.Schema.Types.ObjectId, ref:"pageModel"},
         isOwner:{type:Boolean,required:false},
         isLiked:{type:Boolean,required:false},
         content:{type:String,required:false},
