@@ -186,6 +186,7 @@ exports.getDetailPostById = async(req,res,next)=>{
 
 exports.searchPosts = async(req,res,next)=>{
   try {
+    const idUser = req.params.idUser;
     const textSearch = req.body.textSearch;
     const regexSearch = new RegExp(textSearch,'i');
 
@@ -208,7 +209,12 @@ exports.searchPosts = async(req,res,next)=>{
                                                                                           },
                                                                                         }
                                                                                       );
-    res.status(200).json(resultPost)
+    listPost = resultPost.map((post) => {
+    const isOwner = post.idUser._id.toString() === idUser;
+    const isLiked = post.like.some((like) => like.idUser._id.toString() === idUser);
+    return { ...post.toObject(), isOwner, isLiked };
+    });
+    res.status(200).json(listPost);
   } catch (error) {
     console.log("Lỗi try catch");
     return res.status(500).send("Đã xảy ra lỗi: " + error.message);

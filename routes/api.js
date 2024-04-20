@@ -27,6 +27,7 @@ router.put('/user/:idUser',apiUSer.updateUser);
 router.put('/updateFullname/:idUser',apiUSer.updateFullname);
 router.put('/updateAvatar/:idUser',upload.single('avatar'),apiUSer.updateAvatar);
 router.put('/userChangePasswd/:idUser',apiUSer.changePassword);
+router.get('/searchUser/:idUser',apiUSer.searchUser);
 ///-----------userInfor-------------///
 router.post('/createUserInfo/:idUser',apiUserInfo.createUserInfo);
 router.get('/userInfo/:idUser',apiUserInfo.getUserInfo);
@@ -40,7 +41,7 @@ router.put('/updatePost/:id',upload.single('image'),apiPost.updatePost)
 router.delete('/post/:id',apiPost.removePost);
 router.get('/detailPost/:id',apiPost.getDetailPostById)
 router.get('/getPostByIdUser/:idUser',apiPost.getPostByidUser);
-router.get('/searchPost',apiPost.searchPosts);
+router.get('/searchPost/:idUser',apiPost.searchPosts);
 ///------------like----------------///
 // router.post('/like',apiLike.like);
 router.delete('/removeLike/:id',apiLike.removeLike);
