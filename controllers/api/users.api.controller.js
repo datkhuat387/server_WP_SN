@@ -4,6 +4,7 @@ const multer = require('multer');
 const fs = require('fs');
 const bcrypt = require("bcrypt");
 const { userInforModel } = require("../../models/userInfo.model");
+const { friendshipModel } = require("../../models/friendships.model");
 
 exports.login = async (req, res, next) => {
   const { username, password } = req.body;
@@ -245,5 +246,62 @@ exports.changePassword = async (req, res, next) => {
     return res
       .status(500)
       .send("Đã xảy ra lỗi khi đổi mật khẩu: " + error.message);
+  }
+};
+// exports.searchUser = async(req,res,next)=>{
+//   try {
+//     const idUser = req.params.idUser;
+//     const textSearch = req.body.textSearch;
+//     const regexSearch = new RegExp(textSearch,'i');
+
+//     let resultUser = await userModel.userModel.find({fullname: {$regex: regexSearch}}).select("fullname avatar")
+//     res.status(200).json(resultUser)
+//   } catch (error) {
+//     console.log("Lỗi try catch");
+//     return res.status(500).send("Đã xảy ra lỗi: " + error.message);
+//   }
+// }
+exports.searchUser = async (req, res, next) => {
+  try {
+    const idUser = req.params.idUser;
+    const textSearch = req.body.textSearch;
+    const regexSearch = new RegExp(textSearch, 'i');
+
+    // Tạo map ánh xạ giá trị status sang checkFriend
+    const statusToCheckFriendMap = {
+      0: 0,
+      1: 1,
+      2: 2,
+    };
+
+    // Tìm kiếm người dùng theo điều kiện textSearch
+    let resultUser = await userModel.userModel
+      .find({ fullname: { $regex: regexSearch } })
+      .select("fullname avatar");
+
+    // Lặp qua danh sách người dùng tìm được
+    for (let i = 0; i < resultUser.length; i++) {
+      const user = resultUser[i];
+
+      // Kiểm tra xem người dùng đó có phải là bạn bè của idUser không
+      const friendship = await friendshipModel
+        .findOne({
+          $or: [
+            { idUser: idUser, idFriend: user._id },
+            { idUser: user._id, idFriend: idUser },
+          ],
+        })
+        .exec();
+
+      // Ánh xạ giá trị status sang checkFriend
+      user.checkFriend = friendship
+        ? statusToCheckFriendMap[friendship.status]
+        : 3;
+    }
+
+    res.status(200).json(resultUser);
+  } catch (error) {
+    console.log("Lỗi try catch");
+    return res.status(500).send("Đã xảy ra lỗi: " + error.message);
   }
 };

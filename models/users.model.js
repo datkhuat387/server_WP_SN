@@ -8,6 +8,7 @@ const userSchema = new db.mongoose.Schema(
         fullname:{type:String,required:true},
         status:{type:Number,required:false},
         avatar:{type:String,required:false},
+        checkFriend:{type:Number,required:false},
         idAccountType:{type:db.mongoose.Schema.Types.ObjectId, ref:"accountTypesModel"},
         createAt:{type: Date,required: false,default: Date.now()},
         updateAt:{type: Date,required: false,default: Date.now()}
