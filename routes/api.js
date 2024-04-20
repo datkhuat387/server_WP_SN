@@ -18,6 +18,8 @@ const apiUserInfo = require("../controllers/api/userInfo.api.controller");
 const apiFriendShip = require("../controllers/api/friendship.api.controller");
 const token = require("../middleware/ensureAuthenticated");
 const apiRelationship = require("../controllers/api/relationship.api.controller");
+const apiGroup = require("../controllers/api/group.api.controller");
+const apiPage = require("../controllers/api/page.api.controller");
 
 ///-------------user----------------///
 router.post('/login',apiUSer.login);
@@ -65,6 +67,11 @@ router.put('/confirmAddFriend/:id',apiFriendShip.conFirmAddFriend);
 router.delete('/notConfirmAddFriend/:id',apiFriendShip.notConFirmAddFriend);
 router.put('/block/:idUser/:idFriend',apiFriendShip.block);
 ///----------Type Relationship------///
-router.post("/createTypeRelationship",apiRelationship.createTypeRelationship);
+router.post('/createTypeRelationship',apiRelationship.createTypeRelationship);
+///-------------Group---------------///
+router.post('/createGroup/:idUser',apiGroup.createGroup);
+///-------------Page---------------///
+router.post('/createTypePage',apiPage.createTypePage);
+router.post('/createPage/:idUser',apiPage.createPage);
 
 module.exports = router;

@@ -92,6 +92,7 @@ exports.createUser = async (req, res, next) => {
     const salt = await bcrypt.genSalt(15);
     objuser.password = await bcrypt.hash(req.body.password, salt);
     objuser.fullname = req.body.fullname;
+    objuser.checkFriend = 3;
     objuser.status = 0 // 0-bt, 1 - khóa
     objuser.avatar = "/uploads/1712912703894-anh-mac-dinh-7.jpg";
     objuser.idAccountType = "65fd48f0d1562307a2ffae35";

@@ -6,7 +6,7 @@ const { likeModel } = require("../../models/like.model");
 
 exports.getAllPost = async(req,res, next) =>{
   const idUser = req.params.idUser;
-  let listPost = await postModel.postModel.find().populate("idUser","fullname avatar")
+  let listPost = await postModel.postModel.find().populate("idUser","fullname avatar").populate("idGroup")
                                                 .populate(
                                                   {
                                                     path: "comment",
@@ -35,7 +35,7 @@ exports.getAllPost = async(req,res, next) =>{
 
 exports.getPostByidUser = async(req,res, next) =>{
   const idUser = req.params.idUser;
-  let listPost = await postModel.postModel.find({idUser:idUser}).populate("idUser","fullname avatar")
+  let listPost = await postModel.postModel.find({idUser:idUser}).populate("idUser","fullname avatar").populate("idGroup")
                                                 .populate(
                                                   {
                                                     path: "comment",
@@ -158,7 +158,7 @@ exports.getDetailPostById = async(req,res,next)=>{
   try {
     const idPost = req.params.id
     console.log(idPost);
-    let detailPost = await postModel.postModel.findOne({_id:idPost}).populate("idUser","fullname avatar")
+    let detailPost = await postModel.postModel.findOne({_id:idPost}).populate("idUser","fullname avatar").populate("idGroup")
                                                   .populate({
                                                       path: "comment",
                                                       populate: {
