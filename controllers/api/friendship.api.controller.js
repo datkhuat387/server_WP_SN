@@ -43,6 +43,7 @@ exports.addFriend = async (req, res, next) => {
         return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
     }
 };
+
 exports.conFirmAddFriend = async(req,res,next)=>{
     try {
         const id = req.params.id;
@@ -57,6 +58,7 @@ exports.conFirmAddFriend = async(req,res,next)=>{
         return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
     }
 }
+
 exports.notConFirmAddFriend = async(req,res,next)=>{
     try {
         const id = req.params.id;
@@ -70,6 +72,7 @@ exports.notConFirmAddFriend = async(req,res,next)=>{
         return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
     }
 }
+
 exports.block = async (req, res, next) => {
     try {
         const idFriend = req.params.idFriend;
@@ -108,9 +111,11 @@ exports.block = async (req, res, next) => {
         return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
     }
 };
+
 exports.unBlock = async(req,res,next)=>{
 
 }
+
 exports.unfriend = async (req, res, next) => {
     try {
         const idUser = req.params.idUser;
@@ -138,6 +143,7 @@ exports.unfriend = async (req, res, next) => {
         return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
     }
 };
+
 exports.getStatus = async (req, res, next) => {
     try {
         const idUser = req.params.idUser;
@@ -163,13 +169,15 @@ exports.getStatus = async (req, res, next) => {
         return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
     }
 };
+
 exports.getListFriend = async (req, res, next) => {
     try {
         const idUser = req.params.idUser;
     
         const listFriend = await friendShip.friendshipModel
             .find({ $and: [{ $or: [{ idUser: idUser }, { idFriend: idUser }] }, { status: 1 }] })
-            .populate("idFriend", "fullname avatar");
+            .populate("idFriend", "fullname avatar")
+            .populate("idUser", "fullname avatar");
     
         if (listFriend.length > 0) {
             return res.status(200).json(listFriend);

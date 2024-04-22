@@ -48,6 +48,7 @@ function isValidPhoneNumber(phoneNumber) {
   const phoneRegex = /^0\d{9,}$/;
   return phoneRegex.test(phoneNumber);
 }
+
 exports.getAccount = async (req, res, next) => {
   const idUser = req.params.idUser;
   let user = await userModel.userModel.findOne({ _id: idUser }).select("-password");
@@ -61,6 +62,7 @@ exports.getAccount = async (req, res, next) => {
     res.status(401).send("Lỗi thông tin tài khoản.");
   }
 };
+
 exports.createUser = async (req, res, next) => {
   const { username, password } = req.body;
 
@@ -106,6 +108,7 @@ exports.createUser = async (req, res, next) => {
       .send("Đã xảy ra lỗi khi đăng ký: " + error.message);
   }
 };
+
 exports.updateUser = async (req, res, next) => {
   const { idUser } = req.params;
   const { email, phone } = req.body;
@@ -151,6 +154,7 @@ exports.updateUser = async (req, res, next) => {
     return res.status(500).send("Đã xảy ra lỗi khi cập nhật người dùng: " + error.message);
   }
 };
+
 exports.updateFullname = async (req, res, next) => {
   const { idUser } = req.params;
   const { fullname } = req.body;
@@ -176,6 +180,7 @@ exports.updateFullname = async (req, res, next) => {
     return res.status(500).send("Đã xảy ra lỗi khi cập nhật người dùng: " + error.message);
   }
 };
+
 exports.updateAvatar = async (req, res, next) => {
   try {
     const { idUser } = req.params;
@@ -199,6 +204,7 @@ exports.updateAvatar = async (req, res, next) => {
     return res.status(500).send("Đã xảy ra lỗi khi cập nhật avatar người dùng: " + error.message);
   }
 };
+
 exports.changePassword = async (req, res, next) => {
   const accountId = req.params.idUser;
   const currentPassword = req.body.currentPassword || "";
@@ -249,6 +255,7 @@ exports.changePassword = async (req, res, next) => {
       .send("Đã xảy ra lỗi khi đổi mật khẩu: " + error.message);
   }
 };
+
 // exports.searchUser = async(req,res,next)=>{
 //   try {
 //     const idUser = req.params.idUser;
@@ -262,6 +269,7 @@ exports.changePassword = async (req, res, next) => {
 //     return res.status(500).send("Đã xảy ra lỗi: " + error.message);
 //   }
 // }
+
 exports.searchUser = async (req, res, next) => {
   try {
     const idUser = req.params.idUser;
