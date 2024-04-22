@@ -35,7 +35,38 @@ exports.getAllPost = async(req,res, next) =>{
 
 exports.getPostByidUser = async(req,res, next) =>{
   const idUser = req.params.idUser;
-  let listPost = await postModel.postModel.find({idUser:idUser}).populate("idUser","fullname avatar").populate("idGroup")
+  const idUserAt = req.params.idUserAt;
+  let listPost = await postModel.postModel.find({idUser:idUserAt,idGroup:null}).populate("idUser","fullname avatar")
+                                                .populate(
+                                                  {
+                                                    path: "comment",
+                                                    populate: {
+                                                      path: "idUser",
+                                                      select: "fullname avatar"
+                                                    },
+                                                  } 
+                                                )
+                                                .populate(
+                                                  {
+                                                    path: "like",
+                                                    populate: {
+                                                      path: "idUser",
+                                                      select: "fullname avatar"
+                                                    },
+                                                  }
+                                                );
+  listPost = listPost.map((post) => {
+    const isOwner = post.idUser._id.toString() === idUser;
+    const isLiked = post.like.some((like) => like.idUser._id.toString() === idUser);
+    return { ...post.toObject(), isOwner, isLiked };
+  });
+  res.status(200).json(listPost);
+}
+
+exports.getPostByidGroup = async(req,res, next) =>{
+  const idGroup = req.params.idGroup;
+  const idUser = req.params.idUser;
+  let listPost = await postModel.postModel.find({idGroup:idGroup}).populate("idUser","fullname avatar").populate("idGroup")
                                                 .populate(
                                                   {
                                                     path: "comment",
@@ -123,6 +154,7 @@ exports.updatePost = async(req,res,next)=>{
     return res.status(500).send("Đã xảy ra lỗi: " + error.message);
   }
 }
+
 exports.removePost = async(req,res,next)=>{
   try {
     const idPost = req.params.id
@@ -154,6 +186,7 @@ exports.removePost = async(req,res,next)=>{
     return res.status(500).send("Đã xảy ra lỗi: " + error.message);
   }
 }
+
 exports.getDetailPostById = async(req,res,next)=>{
   try {
     const idPost = req.params.id
@@ -219,4 +252,8 @@ exports.searchPosts = async(req,res,next)=>{
     console.log("Lỗi try catch");
     return res.status(500).send("Đã xảy ra lỗi: " + error.message);
   }
+}
+
+exports.createPostByIdGroup = async(req,res,next)=>{
+
 }

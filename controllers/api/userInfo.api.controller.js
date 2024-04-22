@@ -70,6 +70,7 @@ exports.getUserInfo = async(req,res,next)=>{
         return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
     }
 }
+
 exports.updateDatOfBirth = async(req,res,next)=>{
     try {
         const id = req.params.id
@@ -89,6 +90,7 @@ exports.updateDatOfBirth = async(req,res,next)=>{
         return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
     }
 }
+
 exports.updateUserInfo = async(req,res,next)=>{
     try {
         const id = req.params.id;
@@ -129,6 +131,7 @@ exports.updateUserInfo = async(req,res,next)=>{
     }
 
 }
+
 exports.updateCoverImage = async(req,res,next)=>{
     try {
         const id = req.params.id;

@@ -20,6 +20,7 @@ const token = require("../middleware/ensureAuthenticated");
 const apiRelationship = require("../controllers/api/relationship.api.controller");
 const apiGroup = require("../controllers/api/group.api.controller");
 const apiPage = require("../controllers/api/page.api.controller");
+const apiGroupMember = require("../controllers/api/groupMember.api.controller");
 
 ///-------------user----------------///
 router.post('/login',apiUSer.login);
@@ -42,8 +43,9 @@ router.get('/getAllPost/:idUser',apiPost.getAllPost);
 router.put('/updatePost/:id',upload.single('image'),apiPost.updatePost)
 router.delete('/post/:id',apiPost.removePost);
 router.get('/detailPost/:id',apiPost.getDetailPostById)
-router.get('/getPostByIdUser/:idUser',apiPost.getPostByidUser);
+router.get('/getPostByIdUser/:idUserAt/:idUser',apiPost.getPostByidUser);
 router.get('/searchPost/:idUser',apiPost.searchPosts);
+router.get('/getPostByIdGroup/:idGroup/:idUser',apiPost.getPostByidGroup);
 ///------------like----------------///
 // router.post('/like',apiLike.like);
 router.delete('/removeLike/:id',apiLike.removeLike);
@@ -70,6 +72,15 @@ router.put('/block/:idUser/:idFriend',apiFriendShip.block);
 router.post('/createTypeRelationship',apiRelationship.createTypeRelationship);
 ///-------------Group---------------///
 router.post('/createGroup/:idUser',apiGroup.createGroup);
+router.get('/getMyGroupManage/:idUser',apiGroup.getMyGroupManage);
+router.get('/groupDetail/:idGroup',apiGroup.getDetailGroup);
+///-----------Group Member----------///
+router.post('/joinGroup',apiGroupMember.joinGroup);
+router.get('/getJoin',apiGroupMember.checkJoin);
+router.get('/listWaitJoin/:idGroup',apiGroupMember.listWaitJoin);
+router.get('/listMember/:idGroup',apiGroupMember.listMember);
+router.get('/listMemberBan/:idGroup',apiGroupMember.listMemberBan)
+router.get('/listJoinedGroup/:idUser',apiGroupMember.listJoinedGroup);
 ///-------------Page---------------///
 router.post('/createTypePage',apiPage.createTypePage);
 router.post('/createPage/:idUser',apiPage.createPage);

@@ -24,3 +24,26 @@ exports.createGroup = async(req,res,next)=>{
         return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
     }
 }
+
+exports.getMyGroupManage = async(req,res,next)=>{
+    try {
+        const idUser = req.params.idUser;
+        let listGroup = await group.groupModel.find({creatorId:idUser})
+        res.status(200).json(listGroup);
+    } catch (error) {
+        return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
+    }
+}
+
+exports.getDetailGroup = async(req,res,next)=>{
+    try {
+        const idGroup = req.params.idGroup;
+        let groupDetail = await group.groupModel.findById(idGroup);
+        if(!groupDetail){
+            return res.status(400).send("Nhóm không tồn tại")
+        }
+        res.status(200).json(groupDetail);
+    } catch (error) {
+        return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
+    }
+}
