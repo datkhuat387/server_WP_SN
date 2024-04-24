@@ -31,6 +31,9 @@ router.put('/updateFullname/:idUser',apiUSer.updateFullname);
 router.put('/updateAvatar/:idUser',upload.single('avatar'),apiUSer.updateAvatar);
 router.put('/userChangePasswd/:idUser',apiUSer.changePassword);
 router.get('/searchUser/:idUser',apiUSer.searchUser);
+///-------------type user----------------///
+router.post('/createType',apiUSer.createTypeUser);
+router.put('/updateType/:idType',apiUSer.updateTypeUser);
 ///-----------userInfor-------------///
 router.post('/createUserInfo/:idUser',apiUserInfo.createUserInfo);
 router.get('/userInfo/:idUser',apiUserInfo.getUserInfo);
@@ -61,6 +64,7 @@ router.delete('/comment/:id',apiComment.removeComment);
 router.post('/addFriend',apiFriendShip.addFriend);
 router.delete('/unFriend/:idUser',apiFriendShip.unfriend);
 router.get('/friend/:idUser/:idFriend',apiFriendShip.getStatus);
+router.get('/listFriendById/:idUser/:idUserAt',apiFriendShip.getListFriendByIdUserAt);
 router.get('/listFriend/:idUser',apiFriendShip.getListFriend);
 router.get('/listFriendWaitConfirm/:idUser',apiFriendShip.getListFriendWaitConfrim);
 router.get('/listFriendIsWaitConfirm/:idUser',apiFriendShip.getListFriendIsWaitConfrim);
@@ -70,6 +74,7 @@ router.delete('/notConfirmAddFriend/:id',apiFriendShip.notConFirmAddFriend);
 router.put('/block/:idUser/:idFriend',apiFriendShip.block);
 ///----------Type Relationship------///
 router.post('/createTypeRelationship',apiRelationship.createTypeRelationship);
+router.put('/updateTypeRelationship/:idType',apiRelationship.updateTypeRelationship);
 ///-------------Group---------------///
 router.post('/createGroup/:idUser',apiGroup.createGroup);
 router.get('/getMyGroupManage/:idUser',apiGroup.getMyGroupManage);
@@ -81,8 +86,10 @@ router.get('/listWaitJoin/:idGroup',apiGroupMember.listWaitJoin);
 router.get('/listMember/:idGroup',apiGroupMember.listMember);
 router.get('/listMemberBan/:idGroup',apiGroupMember.listMemberBan)
 router.get('/listJoinedGroup/:idUser',apiGroupMember.listJoinedGroup);
-///-------------Page---------------///
+///-------------Type Page---------------///
 router.post('/createTypePage',apiPage.createTypePage);
+router.put('/updateTypePage/:idType',apiPage.updateTypePage);
+///-------------Page---------------///
 router.post('/createPage/:idUser',apiPage.createPage);
 
 module.exports = router;

@@ -188,7 +188,31 @@ exports.getListFriend = async (req, res, next) => {
         return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
     }
 };
-
+exports.getListFriendByIdUserAt = async (req, res, next) => {
+    try {
+        const idUser = req.params.idUser;
+        const idUserAt = req.params.idUserAt;
+    
+        const listFriend = await friendShip.friendshipModel
+            .find({ $and: [{ $or: [{ idUser: idUserAt }, { idFriend: idUserAt }] }, { status: 1 }] })
+            .populate("idFriend", "fullname avatar")
+            .populate("idUser", "fullname avatar");
+        const checkFriend = await friendShip.friendshipModel.findOne(
+            { $and: [{ $or: [{ idUser: idUserAt,idFriend:idUser }, { idFriend: idUserAt,idUser:idUser }] }, { status: 1 }] })
+    
+        if (listFriend.length > 0) {
+            if (checkFriend) {
+                const listFriendchk = listFriend.filter(friend => friend._id.toString() !== checkFriend._id.toString());
+                return res.status(200).json(listFriendchk);
+            }
+            return res.status(200).json(listFriend);
+        } else {
+            return res.status(400).send("Không có bạn bè nào.");
+        }
+    } catch (error) {
+        return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
+    }
+};
 exports.getListFriendWaitConfrim = async(req,res,next)=>{
     try {
         const idUser = req.params.idUser;
