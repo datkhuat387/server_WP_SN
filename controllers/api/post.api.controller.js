@@ -98,7 +98,7 @@ exports.createPost = async (req, res, next) => {
     let objPost = new postModel.postModel();
     objPost.idUser = req.body.idUser;
     objPost.isOwner = true;
-    objPost.idGroup = null;
+    objPost.idGroup = req.body.idGroup||null;
     objPost.idPage = null;
     objPost.isLiked = false;
     objPost.content = req.body.content;

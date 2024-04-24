@@ -6,6 +6,42 @@ const bcrypt = require("bcrypt");
 const { userInforModel } = require("../../models/userInfo.model");
 const { friendshipModel } = require("../../models/friendships.model");
 
+exports.createTypeUser = async(req,res,next)=>{
+  try {
+    const name = req.body.name;
+    let checkType = await userModel.accountTypesModel.findOne({name: name})
+    if(checkType){
+      return res.status(400).send("Loại tài khoản đã tồn tại");
+    }
+    let objType = new userModel.accountTypesModel()
+    objType.name = name;
+    await objType.save()
+    res.status(200).json(objType);
+  } catch (error) {
+    return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
+  }
+}
+
+exports.updateTypeUser = async(req,res,next)=>{
+  try {
+    const idType = req.params.idType;
+    const name = req.body.name;
+    let checkType = await userModel.accountTypesModel.findOne({_id: idType})
+    let checkName = await userModel.accountTypesModel.findOne({name:name})
+    if(!checkType){
+      return res.status(400).send("Loại tài khoản không tồn tại");
+    }
+    if(checkName){
+      return res.status(400).send("Loại tài khoản đã tồn tại");
+    }
+    checkType.name = name;
+    await checkType.save();
+    res.status(200).json(checkType);
+  } catch (error) {
+    return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
+  }
+}
+
 exports.login = async (req, res, next) => {
   const { username, password } = req.body;
 
