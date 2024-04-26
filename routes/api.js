@@ -81,11 +81,16 @@ router.get('/getMyGroupManage/:idUser',apiGroup.getMyGroupManage);
 router.get('/groupDetail/:idGroup',apiGroup.getDetailGroup);
 ///-----------Group Member----------///
 router.post('/joinGroup',apiGroupMember.joinGroup);
-router.get('/getJoin',apiGroupMember.checkJoin);
+router.get('/getJoin/:idGroup/:idUser',apiGroupMember.checkJoin);
 router.get('/listWaitJoin/:idGroup',apiGroupMember.listWaitJoin);
 router.get('/listMember/:idGroup',apiGroupMember.listMember);
-router.get('/listMemberBan/:idGroup',apiGroupMember.listMemberBan)
+router.get('/listMemberBan/:idGroup',apiGroupMember.listMemberBan);
 router.get('/listJoinedGroup/:idUser',apiGroupMember.listJoinedGroup);
+router.put('/confirmJoin/:idGroupMember',apiGroupMember.confirmJoin);
+router.delete('/cancelJoin/:idGroupMember',apiGroupMember.cancelJoin);
+router.put('/banMember/:idGroupMember',apiGroupMember.banMember);
+router.delete('/kickMember/:idGroupMember',apiGroupMember.kickMember);
+router.delete('/outGroup/:idGroupMember',apiGroupMember.outGroup);
 ///-------------Type Page---------------///
 router.post('/createTypePage',apiPage.createTypePage);
 router.put('/updateTypePage/:idType',apiPage.updateTypePage);

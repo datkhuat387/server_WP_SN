@@ -34,10 +34,86 @@ exports.joinGroup = async(req,res,next)=>{
     }
 }
 
+exports.confirmJoin = async(req,res,next)=>{
+    try {
+        const idGroupMember = req.params.idGroupMember;
+        const checkJoin = await groupMember.groupMemberModel.findById(idGroupMember);
+        if(!checkJoin){
+            return res.status(400).send("không tìm thấy đơn tham gia nhóm");
+        }
+        checkJoin.status = 1;
+        checkJoin.updateAt = Date.now();
+
+        const confirmJoin = await checkJoin.save();
+        res.status(200).json(confirmJoin);
+    } catch (error) {
+        return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
+    }
+}
+
+exports.cancelJoin = async(req,res,next)=>{
+    try {
+        const idGroupMember = req.params.idGroupMember;
+        const checkJoin = await groupMember.groupMemberModel.findById(idGroupMember).populate("idUser","fullname avatar");
+        if(!checkJoin){
+            return res.status(400).send("không tìm thấy đơn tham gia nhóm");
+        }
+        await groupMember.groupMemberModel.deleteOne({_id:idGroupMember});
+        res.status(200).json(checkJoin);
+    } catch (error) {
+        return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
+    }
+}
+
+exports.banMember = async(req,res,next)=>{
+    try {
+        const idGroupMember = req.params.idGroupMember;
+        const checkJoin = await groupMember.groupMemberModel.findById(idGroupMember).populate("idUser","fullname avatar");
+        if(!checkJoin){
+            return res.status(400).send("không tìm thấy đơn tham gia nhóm");
+        }
+        checkJoin.status = 2;
+        checkJoin.updateAt = Date.now();
+
+        const confirmJoin = await checkJoin.save();
+        res.status(200).json(confirmJoin);
+    } catch (error) {
+        return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
+    }
+}
+
+exports.kickMember = async(req,res,next)=>{
+    try {
+        const idGroupMember = req.params.idGroupMember;
+        const checkJoin = await groupMember.groupMemberModel.findById(idGroupMember).populate("idUser","fullname avatar");
+        if(!checkJoin){
+            return res.status(400).send("không tìm thấy đơn tham gia nhóm");
+        }
+        await groupMember.groupMemberModel.deleteOne({_id:idGroupMember});
+        res.status(200).send("Đã mời thành viên ra khỏi nhóm");
+    } catch (error) {
+        return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
+    }
+}
+
+exports.outGroup = async(req,res,next)=>{
+    try {
+        const idGroupMember = req.params.idGroupMember;
+        const checkJoin = await groupMember.groupMemberModel.findOne({_id:idGroupMember,status:1}).populate("idUser","fullname avatar");
+        if(!checkJoin){
+            return res.status(400).send("không tìm thấy đơn tham gia nhóm");
+        }
+        await groupMember.groupMemberModel.deleteOne({_id:idGroupMember});
+        res.status(200).send("Đã ra khỏi nhóm");
+    } catch (error) {
+        return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
+    }
+}
+
 exports.checkJoin = async(req,res,next)=>{
     try {
-        const idUser = req.body.idUser;
-        const idGroup = req.body.idGroup;
+        const idUser = req.params.idUser;
+        const idGroup = req.params.idGroup;
         const checkJoin = await groupMember.groupMemberModel.findOne({
             idUser:idUser,
             idGroup:idGroup
@@ -84,7 +160,8 @@ exports.listMemberBan = async(req,res,next)=>{
 exports.listJoinedGroup = async(req,res,next)=>{
     try {
         const idUser = req.params.idUser;
-        let listJoinedGroup = await groupMember.groupMemberModel.find({idUser:idUser, status:1}).populate("idGroup","name coverImage");
+        let listJoinedGroup = await groupMember.groupMemberModel.find({idUser:idUser, status:1}).populate("idGroup","name coverImage updateAt")
+                                                                                                .populate("idUser","fullname avatar");
         res.status(200).json(listJoinedGroup);
     } catch (error) {
         return res.status(500).send("Đã xảy ra lỗi svr: " + error.message);
