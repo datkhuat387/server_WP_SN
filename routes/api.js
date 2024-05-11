@@ -62,7 +62,7 @@ router.put('/comment/:id',apiComment.updateComment);
 router.delete('/comment/:id',apiComment.removeComment);
 ///------------Friend------------///
 router.post('/addFriend',apiFriendShip.addFriend);
-router.delete('/unFriend/:idUser',apiFriendShip.unfriend);
+router.delete('/unFriend/:idFriendship',apiFriendShip.unfriend);
 router.get('/friend/:idUser/:idFriend',apiFriendShip.getStatus);
 router.get('/listFriendById/:idUser/:idUserAt',apiFriendShip.getListFriendByIdUserAt);
 router.get('/listFriend/:idUser',apiFriendShip.getListFriend);
