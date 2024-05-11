@@ -118,24 +118,19 @@ exports.unBlock = async(req,res,next)=>{
 
 exports.unfriend = async (req, res, next) => {
     try {
-        const idUser = req.params.idUser;
-  
+        const idFriendship = req.params.idFriendship;
+        console.log(idFriendship);
+        // const checkIsFriend = await friendShip.friendshipModel.findOne({
+        //     $or: [{ idUser: idUser, status: 1 }, { idFriend: idUser, status: 1 }],
+        // });
         const checkIsFriend = await friendShip.friendshipModel.findOne({
-            $or: [{ idUser: idUser, status: 1 }, { idFriend: idUser, status: 1 }],
+            _id: idFriendship, status: 1
         });
     
         if (checkIsFriend) {
-            if (checkIsFriend.idUser === idUser) {
-            await friendShip.friendshipModel.deleteOne({ idUser: idUser });
+            await friendShip.friendshipModel.deleteOne({ _id: idFriendship });
             console.log("idUser = idUser");
             return res.status(200).send("Đã hủy kết bạn");
-            } else if (checkIsFriend.idFriend === idUser) {
-            await friendShip.friendshipModel.deleteOne({ idFriend: idUser });
-            console.log("idFriend = idUser");
-            return res.status(200).send("Đã hủy kết bạn");
-            } else {
-            return res.status(400).send("Lỗi trạng thái: Không thể hủy kết bạn");
-            }
         } else {
             return res.status(400).send("Không phải là bạn bè");
         }
