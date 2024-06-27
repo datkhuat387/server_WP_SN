@@ -4,34 +4,74 @@ const fs = require('fs');
 const { commentModel } = require("../../models/comments.model");
 const { likeModel } = require("../../models/like.model");
 
-exports.getAllPost = async(req,res, next) =>{
-  const idUser = req.params.idUser;
-  let listPost = await postModel.postModel.find().populate("idUser","fullname avatar").populate("idGroup")
-                                                .populate(
-                                                  {
-                                                    path: "comment",
-                                                    populate: {
-                                                      path: "idUser",
-                                                      select: "fullname avatar"
-                                                    },
-                                                  } 
-                                                )
-                                                .populate(
-                                                  {
-                                                    path: "like",
-                                                    populate: {
-                                                      path: "idUser",
-                                                      select: "fullname avatar"
-                                                    },
-                                                  }
-                                                );
-  listPost = listPost.map((post) => {
-    const isOwner = post.idUser._id.toString() === idUser;
-    const isLiked = post.like.some((like) => like.idUser._id.toString() === idUser);
-    return { ...post.toObject(), isOwner, isLiked };
-  });
-  res.status(200).json(listPost);
-}
+// exports.getAllPost = async(req,res, next) =>{
+//   const idUser = req.params.idUser;
+//   let listPost = await postModel.postModel.find().populate("idUser","fullname avatar").populate("idGroup")
+//                                                 .populate(
+//                                                   {
+//                                                     path: "comment",
+//                                                     populate: {
+//                                                       path: "idUser",
+//                                                       select: "fullname avatar"
+//                                                     },
+//                                                   } 
+//                                                 )
+//                                                 .populate(
+//                                                   {
+//                                                     path: "like",
+//                                                     populate: {
+//                                                       path: "idUser",
+//                                                       select: "fullname avatar"
+//                                                     },
+//                                                   }
+//                                                 );
+//   listPost = listPost.map((post) => {
+//     const isOwner = post.idUser._id.toString() === idUser;
+//     const isLiked = post.like.some((like) => like.idUser._id.toString() === idUser);
+//     return { ...post.toObject(), isOwner, isLiked };
+//   });
+//   res.status(200).json(listPost);
+// }
+
+exports.getAllPost = async (req, res, next) => {
+    const idUser = req.params.idUser;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    try {
+        let listPost = await postModel.postModel.find()
+            .populate("idUser", "fullname avatar")
+            .populate("idGroup")
+            .populate({
+                path: "comment",
+                populate: {
+                    path: "idUser",
+                    select: "fullname avatar"
+                }
+            })
+            .populate({
+                path: "like",
+                populate: {
+                    path: "idUser",
+                    select: "fullname avatar"
+                }
+            })
+            .skip(skip)
+            .limit(limit);
+
+        listPost = listPost.map((post) => {
+            const isOwner = post.idUser._id.toString() === idUser;
+            const isLiked = post.like.some((like) => like.idUser._id.toString() === idUser);
+            return { ...post.toObject(), isOwner, isLiked };
+        });
+        console.log(listPost.length)
+        res.status(200).json(listPost);
+    } catch (error) {
+        next(error);
+    }
+};
+
 
 exports.getPostByidUser = async(req,res, next) =>{
   const idUser = req.params.idUser;
